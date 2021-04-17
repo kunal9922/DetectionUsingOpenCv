@@ -17,18 +17,30 @@ class HandDetector():
 
       def findHands(self, img, draw=True):
             imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-            results = self.hands.process(imgRGB)  #           result contains the detected landmarks as dictionary 
+            self.results = self.hands.process(imgRGB)  #           result contains the detected landmarks as dictionary 
             # print(results.multi_hand_landmarks)
 
             # --- detected the hand 
-            if results.multi_hand_landmarks:
+            if self.results.multi_hand_landmarks:
                   # get the how many hand we detected in an img.
-                  for handlms in results.multi_hand_landmarks:
+                  for handlms in self.results.multi_hand_landmarks:
                            if draw:
                                  self.mpDraw.draw_landmarks(img, handlms,
                                                                                                       self.mpHands.HAND_CONNECTIONS)
             return img
-      
+
+      def findPosition(self, img, handNo=0, draw=True):
+            lmList = [] # will store landmarks
+             # --- detected the hand 
+            if self.results.multi_hand_landmarks:
+                  myHand = self.results.multi_hand_landmarks[handNo]
+                  for id, lm in enumerate(myHand.landmark):
+                        h, w, c = img.shape
+                        cx, cy = int(lm.x * w), int(lm.y * h)
+                        lmList.append([id, cx, cy])
+                        
+
+            return lmList
 
 def workWithHandsDetect():
       pTime = 0
@@ -40,7 +52,9 @@ def workWithHandsDetect():
       while cap.isOpened():
             success, img = cap.read()
             img = handsDetector.findHands(img)
-
+            lmList = handsDetector.findPosition(img)
+            if len(lmList) != 0:
+                  print(lmList[3])
             #calculate the frame rate framePerSecond fps.
             cTime = time.time()
             fps = 1/(cTime - pTime)
@@ -50,5 +64,5 @@ def workWithHandsDetect():
             cv2.imshow("Hand", img)
             cv2.waitKey(1)
             
-            
-workWithHandsDetect()
+if __name__ == 'main':            
+      workWithHandsDetect()
