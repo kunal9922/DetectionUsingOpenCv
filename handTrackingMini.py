@@ -18,7 +18,7 @@ while True:
       if results.multi_hand_landmarks:
             # get the how many hand we detected in an img.
             for handlms in results.multi_hand_landmarks:
-                   mpDraw.draw_landmarks(img, handlms)
+                   mpDraw.draw_landmarks(img, handlms, mpHands.HAND_CONNECTIONS)
       
       cv2.imshow("Hand", img)
       cv2.waitKey(1)
