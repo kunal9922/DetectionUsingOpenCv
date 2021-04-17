@@ -22,8 +22,13 @@ while True:
       if results.multi_hand_landmarks:
             # get the how many hand we detected in an img.
             for handlms in results.multi_hand_landmarks:
-                  
-                   mpDraw.draw_landmarks(img, handlms, mpHands.HAND_CONNECTIONS)
+                  for Id , lm in enumerate(handlms.landmark):
+                        # give us the detected landmark of hand and with thier id no.
+                        h, w, c = img.shape # -- return the image shape
+                        cx, cy = int(lm.x * w), int(lm.y * h)
+                        print(Id, cx, cy)
+                        
+                  mpDraw.draw_landmarks(img, handlms, mpHands.HAND_CONNECTIONS)
 
       #calculate the frame rate framePerSecond fps.
       cTime = time.time()
